@@ -1,0 +1,547 @@
+\documentclass[a4paper,UKenglish]{lipics-v2016}
+
+\newcommand{\comp}{\mathrel{\circ}}
+\newcommand{\mhe}[1]{\todo[inline,color=green,caption={}]{#1}}
+\newcommand{\abb}[1]{\todo[inline,caption={}]{#1}}
+\usepackage{todonotes}
+
+\newcommand{\isProp}{\operatorname{isProp}}
+\newcommand{\UU}{\mathcal{U}}
+\newcommand{\ttt}{\star}
+\newcommand{\Empty}{\mathbf{0}}
+\newcommand{\unit}{\mathbf{1}}
+\newcommand{\bool}{\mathbf{2}}
+\newcommand{\inl}{{\operatorname{inl}}}
+\newcommand{\inr}{{\operatorname{inr}}}
+\newcommand{\idfunc}[1][]{\operatorname{id}_{#1}}
+\newcommand{\flip}{\operatorname{flip}}
+
+% for section-numbered lemmas etc., use "numberwithinsect"
+
+\usepackage{microtype}%if unwanted, comment out or use option "draft"
+
+%\graphicspath{{./graphics/}}%helpful if your graphic files are in another directory
+
+\bibliographystyle{plainurl}% the recommended bibstyle
+
+% Author macros::begin %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{Parametricity and excluded middle}
+
+%% Please provide for each author the \author and \affil macro, even when authors have the same affiliation, i.e. for each author there needs to be the  \author and \affil macros
+% \author[1]{Auke B. Booij}
+% \author[2]{Mart{\'\i}n H. Escard{\'o}}
+% \affil[1]{School of Computer Science, University of Birmingham,
+%   Birmingham B15 2TT, UK\\
+%   \texttt{abb538@cs.bham.ac.uk}}
+% \affil[2]{School of Computer Science, University of Birmingham,
+%   Birmingham B15 2TT, UK\\
+%   \texttt{m.escardo@cs.bham.ac.uk}}
+% \authorrunning{A.\,B. Booij and M.\,H. Escard{\'o}}
+
+% \Copyright{Auke B. Booij and Mart{\'\i}n H. Escard{\'o}}
+
+\author{~}
+\authorrunning{~}
+\Copyright{~}
+
+
+\subjclass{F.4.1 Mathematical Logic}% mandatory: Please choose ACM 1998 classifications from http://www.acm.org/about/class/ccs98-html . E.g., cite as "F.1.1 Models of Computation".
+\keywords{relational parametricity, dependent type theory, excluded
+  middle, constructive mathematics}% mandatory: Please provide 1-5 keywords
+% Author macros::end %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%Editor-only macros:: begin (do not touch as author)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\EventEditors{}
+\EventNoEds{2}
+\EventLongTitle{}
+\EventShortTitle{}
+\EventAcronym{}
+\EventYear{}
+\EventDate{}
+\EventLocation{}
+\EventLogo{}
+\SeriesVolume{}
+\ArticleNo{}
+% Editor-only macros::end %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+
+
+  It is known that one can prove the existence of non-parametric
+  functions by assuming classical axioms, and our work is a converse
+  to that.  We prove classical axioms in Martin-Löf Type Theory by
+  assuming specific instances of non-parametricity.
+
+\end{abstract}
+
+\section{Parametricity in dependent type theory}
+
+Reynolds' theory of relational
+parametricity~\cite{DBLP:conf/ifip/Reynolds83}~characterizes the terms
+of the polymorphically typed $\lambda$-calculus System~F.  This theory
+of parametricity has since been extended to richer and more expressive
+type theories. Bernardy and
+Jansson~\cite{DBLP:journals/jfp/BernardyJP12} develop parametricity
+for pure type systems, and Atkey et
+al.~\cite{DBLP:conf/popl/AtkeyGJ14} develop parametricity for
+Martin-L\"of Type Theory (MLTT).  MLTT admits the definition of
+polymorphic functions using dependent function types and a
+universe~$\UU$.  For example, the polymorphic identity function has
+type $\forall \alpha . \alpha \to \alpha$ in System~F, and the type
+$\prod_{X : \UU} X \to X$ in MLTT.\@
+
+Reynolds' parametricity results show that the only term of System~F
+with type $\forall \alpha . \alpha \to \alpha$ is
+$\Lambda \alpha. \lambda (x:\alpha).x$, the identity function at every
+type.  Atkey et al.\ prove that any term $f:\prod_{X : \UU} X \to X$
+of MLTT satisfies $e \comp f_X =f_Y \comp e$ for arbitrary
+$e : X \to Y$, where the equality sign denotes the identity type.
+% This is in the style of Wadler~\cite{DBLP:conf/fpca/Wadler89}, who
+% calls such conclusions \emph{free theorems}.
+From this we can then deduce that
+$M$ has to be the identity function at every type in MLTT.
+
+Keller and Lasson~\cite{DBLP:conf/csl/KellerL12} describe a type
+theory where parametricity is part of the language, and show the
+negation of excluded middle in the type theory.  Also it is easy to
+see that if excluded middle is part of the language, then there is a
+function $f : \prod_{X : \UU} X \to X$ which is the negation function
+$\flip:\bool\to\bool$ at the type $\bool$ of
+booleans~\cite[Exercise~6.9]{hottbook}, and so parametricity is
+violated.  In this note we show that, conversely, if $f$ is invariant
+under isomorphism, as is the case in univalent extensions of MLTT,
+this specific violation of parametricity gives excluded middle.
+
+% For arbitrary extensions\todo{models?}~of MLTT it may not be clear
+% whether they are parametric.  As an example, in the model of cubical
+% sets (a constructive model of type theory with univalence), there may
+% be elements in the \emph{interpretation} of the type
+% $\prod_{X : \UU} X \to X$ which are not the identity.  Nevertheless,
+% as long as such models are constructive, it is difficult to violate
+% parametricity.  Specifically, given an element of
+% $\prod_{X : \UU} X \to X$ that is not the identity function on the
+% booleans, excluded middle follows.  Indeed, this can be proved
+% internally in MLTT under the assumption that the polymorphic function
+% is invariant under isomorphism of types.  This contrasts with previous
+% results that parametricity negates excluded middle.  Here instead we
+% get excluded middle by a specific violation of parametricity.
+
+\section{Classical axioms from non-parametricity}
+
+We now list a number of ways in which classical axioms can be derived
+from specific violations of parametricity. We work with the version of
+excluded middle from univalent foundations, namely that $P + \neg P$
+for all propositions $P$, where a type is called a proposition if it
+has at most one element, meaning that any two of its elements are
+equal.
+
+\subsection{Polymorphic endomaps}
+
+By parametricity, we know that there is no \emph{closed term} of type
+$\prod_{X : \UU} X \to X$ other than the identity. This is a meta-theorem \emph{about} type
+theory. The following formulates a theorem \emph{of} type theory.  Say
+that a function $f:\prod_{X : \UU} X \to X$ is \emph{invariant under
+  isomorphism} if for any two types $X$ and $Y$ and any isomorphism
+$e:X \to Y$, we have $e \comp f_X = f_Y \comp e$, where we have
+written $f_X$ as a shorthand for $f(X)$.
+\begin{theorem}
+\label{thm:identity-bool}
+If there is a function $f:\prod_{X : \UU} X \to X$ such that $f_\bool$
+is the flip map and $f$ is invariant under isomorphism, then the law
+of excluded middle holds.
+\end{theorem}
+This holds in any dependent type theory with
+an empty type, a unit type~$\unit$, a type of booleans, identity types,
+coproducts, $\Pi$-types, and a universe $\UU$.
+\begin{proof}
+  To derive excluded middle from~$f$, let $P$ be an arbitrary
+  proposition. We do case analysis on the value of
+  $f_{P+\unit}(\inr(\ttt)) : P+\unit$.
+  \begin{enumerate}
+  \item If it is of the form $\inl(p)$ with $p:P$, we conclude
+    immediately that $P$ holds.
+  \item If it is of the form $\inr(\ttt)$, then $P$ cannot hold, for if
+    we had $p:P$, then the map $e : \bool \to P + \unit$ defined by $e(0)=\inl(p)$ and $e(1)=\inr(\ttt)$ would be an isomorphism, and hence $e \comp f_\bool = f_{P+\unit} \comp e$ and so
+  $ \inl(p) = e(0) = e (f_\bool(1)) = f_{P+\unit} (e(1)) = \inr(\ttt)$, which is a contradiction.
+  \end{enumerate}
+Therefore $P$ or not $P$.
+% % We need to show $P + \neg P$.
+%   % The essence of the argument is that we construct a type that is
+%   % isomorphic to $\bool$ if $P$ holds, and something else otherwise, in
+%   % such a way that we force $f$ to tell us something about $P$.
+%   % We pick that type to be $\unit+P$.
+%   % Here, $\unit$ is the unit type whose only element is $\ttt:\unit$.
+% If $P$ holds, then $P$ is isomorphic to $\unit$,
+% and so $\unit+P$ is isomorphic to $\bool$.
+% So then, by the fact that $f$ is invariant under isomorphism,
+% $f_{\unit+P}$ must flip the elements of $\unit+P$.
+% % In other words, since $f_\bool$ does not have any fixed points,
+% % neither does $f_{\unit+P}$.
+% % Conversely, if $P$ does not hold, then $\unit+P$ is isomorphic to
+% % $\unit$, and $f_{\unit+P}$ is the identity map (as it is the only
+% % map $\unit+P \to \unit + P$).
+%
+% So we consider $x:=f_{\unit+P}(\inl(\ttt))$, noting that $x:\unit+P$.
+% Using the induction principle of coproducts, we can do case analysis
+% on $x$.
+% If $x$ is $\inr(p)$ for some $p:P$, then we know that $P$ holds.
+% If $x$ is $\inl(t)$ for some $t:\unit$, then, by the induction
+% principle of $\unit$, we know that $t=\ttt$, and so $f_{\unit+P}$ has
+% a fixed point: so it is impossible that $\unit+P$ is isomorphic to
+% $\bool$, because $f_\bool$ has no fixed points.
+% From the absurdity of such an isomorphism we may conclude that $P$
+% does not hold.
+\end{proof}
+
+\begin{remark} \leavevmode
+%  Assuming univalent extensions, we can weaken the hypothesis of the
+%  theorem to get the same conclusion:
+  \begin{enumerate}
+  \item The invariance of $f$ under isomorphism follows directly from
+    internal parametricity. Hence the theorem gives an alternative
+    proof that excluded middle is false in the presence of internal
+    parametricity.
+  \item If we assume univalence, any such $f$ is automatically
+    invariant under isomorphism.  More interestingly, if we assume
+    function extensionality, which itself follows from univalence,
+    then we can weaken the assumption to assert that $f_{\bool}$ is
+    not the identity map. This observation is due to Mike
+    Shulman~\cite[comment]{parametricity:and:em} and is seen as
+    follows.
+
+    Because $\flip$ is an isomorphism, we must have
+    $\flip \comp f_\bool = f_\bool \comp \flip$.  This shows that
+    $f_\bool$ cannot be any of the two constant functions
+    $\bool \to \bool$.  By the assumption that it is not the identity,
+    $f_\bool$ must itself be the flip function, as there are only four functions
+    $\bool \to \bool$.
+  \end{enumerate}
+\end{remark}
+
+We say that a point $x$ of a type $X$ is \emph{isolated} if the type
+$x=y$ is decidable.  This construction can be generalized to the
+assumption that we are given $f:\prod_{X : \UU} X \to X$ with the
+property that there is a type $X:\UU$ with an isolated point $x:X$
+with $f_X(x) \neq x$.  For $X$ to have an isolated point $x$ is
+equivalent to saying that $X$ is isomorphic to $Y+\unit$ for some type
+$Y$ by a map that sends $x$ to $\inr(\ttt)$. The following was
+observed independently by Mike
+Shulman~\cite[comment]{parametricity:and:em} and ourselves:
+\begin{theorem}
+  If there is a function $f:\prod_{X : \UU} X \to X$ such that
+  $f_X(x)\neq x$ for some isolated point $x:X$ and $f$ is invariant
+  under isomorphism, then the law of excluded middle holds.
+\end{theorem}
+
+\begin{proof}
+  To derive excluded middle from~$f$, let $P$ be an arbitrary
+  proposition. We do case analysis on the value of
+  $f_{P\times Y + \unit}(\inr(\ttt)) : P \times Y + \unit$.
+  \begin{enumerate}
+  \item If it is of the form $\inl((p,y))$ with $p:P$, we conclude
+    immediately that $P$ holds.
+  \item If it is of the form $\inr(\ttt)$, then $P$ cannot hold, for
+    if we had $p:P$, then the map $e : X \to P\times Y + \unit$
+    defined by $e(x)=\inr(\ttt)$ (where $x$ is the isolated point) and
+    $e(y)=\inl((p,y))$ for $y \neq x$ would be an isomorphism, and
+    hence $e \comp f_X = f_{P\times Y+\unit} \comp e$ and so
+    $ \inl((p,f_X(x))) = e (f_X(x)) = f_{P\times Y+\unit} (e(x)) =
+    f_{P\times Y+\unit} (\inr(\ttt)) =\inr(\ttt)$, which is a contradiction.
+  \end{enumerate}
+Therefore $P$ or not $P$.
+%
+% We consider $x:=f_{\unit + P\times Y}(\inl(\ttt))$ (where again
+% $P$ is our arbitrary proposition).
+% This works because if $P$ holds, then $\unit + (P
+% \times Y)$ is isomorphic to $X$, and if $P$ does not hold, then
+% $\unit + P\times Y$ is isomorphic to $\unit$.
+%
+% So we do case analysis on $x$.
+% If $x$ is $\inr((p,y))$ we know that $P$ holds (as $p:P$).
+% If it is $\inl(\ttt)$ we, then we claim that $P$ does not hold.
+% This means we assume $P$ holds and derive a contradiction.
+% So, assuming that $P$ holds, we can find an isomorphism between $X$
+% and $\unit + P\times Y$ that sends $x$ to $\inl(\ttt)$.
+% But $f$ could not have been invariant under this isomorphism, as on
+% the one hand, $f_X(x)\neq x$, but on the other hand, $f_{\unit + (P
+%   \times Y)}(\inl(\ttt))=\inl(\ttt)$: a contradiction.
+\end{proof}
+
+In both examples, we have assumed that some given
+$f:\prod_{X : \UU} X \to X$ is different from the polymorphic identity
+at a specific type $X$.  The assumption that $f$ is not the
+polymorphic identity map, without knowing in which way it is
+different, does not seem to be strong enough to be able to prove
+classical axioms.  It is natural to wonder what the weakest assumption
+is that both implies that the given $f$ is not parametric, and can be
+used to prove classical axioms, and we leave this as an open question.
+
+\subsection{Church numerals}
+
+The above can be applied to obtain classical axioms from
+other kinds of violations of parametricity.  As a simple example,
+consider $f:\prod_{X : \UU} (X \to X) \to (X \to X)$.  Parametric
+elements of this type are Church numerals.
+%
+Given $f$, we can define a polymorphic endomap
+$g:\prod_{X : \UU} X \to X$ by $g_X=f_X(\idfunc[X])$, where
+$\idfunc[X]$ is the identity function.  If $f$ is invariant under
+isomorphism, then so is $g$, and hence the assumption that
+$f_\bool(\idfunc[\bool])$ is \emph{not} the identity function gives
+excluded middle, assuming function extensionality.
+
+\subsection{Maps of the universe into the booleans}
+
+We consider two more violations of parametricity.
+A function $f:\prod_{X : \UU} X \to \bool$ is invariant under
+isomorphism if we have $f_Y \comp e = f_X$ for any isomorphism
+$e:X\to Y$.  Parametricity tells us that $f$ has to be constant.
+Consider the violation of parametricity in which there is a type $X$
+with points $x,y:X$ with $f_X(x) \neq f_X(y)$.  If we additionally
+assume that there is an isomorphism of $X$ which maps $x$ to $y$, we
+arrive at the contradiction that $f$ was not invariant under
+isomorphism.  So the mere invariance under isomorphism shows that this
+specific violation of parametricity is impossible.
+
+A function $f : \UU \to \bool$ is invariant under
+isomorphism, or extensional, if whenever $X$ and~$Y$ are isomorphic
+types, $f(X)=f(Y)$.  The parametric model of Atkey et al.\ shows that
+such functions are constant. Without parametricity assumptions, we
+have the following non-constructive conclusion:
+\begin{theorem}[Escard{\'o} and Streicher~\cite{DBLP:journals/apal/EscardoS16}]
+  If $f$ is invariant under isomorphism, and there are $X,Y:\UU$ with
+  $f(X) \neq f(Y)$, then the weak limited principle of omniscience
+  holds.
+\end{theorem}
+Moreover, Alex Simpson strengthened the conclusion to weak excluded
+middle, namely $\neg A + \neg\neg A$ for all $A : U$, assuming
+function extensionality, as also recorded
+in~\cite{DBLP:journals/apal/EscardoS16}.
+
+The results discussed so far suggest that different violations of
+parametricity have different proof-theoretic strength: some violations
+are impossible, while others imply varying amounts of excluded middle.
+
+\section{Automorphisms of the universe}
+
+There have been attempts to use parametricity to show that the only
+automorphism of a universe of types is the identity.  Nicolai Kraus
+observed in the HoTT mailing list~\cite{automorphisms:kraus} that,
+assuming univalence, automorphisms of a universe $\UU$ living in a
+universe $\mathcal{V}$ correspond to elements of the loop space
+$\Omega(\mathcal{V},\UU)$.  It can be seen that nontrivial elements of
+the higher loop space $\Omega^2(\mathcal{V},\UU)$ imply violations of
+parametricity for $\prod_{X : \UU} X \to X$.  This suggests that
+parametricity may play a role in automorphisms of the universe.
+
+We are not aware of a proof that parametricity implies that the only
+automorphism of the universe is the identity. However, in the spirit
+of the above development, we can show that automorphisms with specific
+properties imply excluded middle.
+
+As observed by Peter Lumsdaine in the HoTT mailing
+list~\cite{automorphisms:lumsdaine:lem}, in the presence of excluded
+middle we can prove that there exists a nontrivial automorphism of the
+universe.  The map $\UU\to\UU$ is defined as follows.  Given a type
+$X$, we use excluded middle to decide if it is a proposition.  If it
+is, we map $X$ to $\neg X$, and otherwise we map $X$ to itself.
+Assuming propositional extensionality, that is, that any two logically
+equivalent propositions are equal, or univalence for propositions,
+this map flips the empty type $\Empty$ with the unit type~$\unit$.
+% This works because if excluded middle
+% holds, then all propositions are either $\Empty$ or $\unit$, and the
+% mapping $X \mapsto \neg X$ exchanges these two.
+% Conversely, the existence of a nontrivial automorphism can imply
+% classical axioms.
+We have the following converse:
+\begin{theorem}
+\label{thm:automorphism}
+Assuming propositional extensionality, if there is an automorphism of the
+universe that maps the unit type to the empty type, then excluded middle
+holds.
+%$F:\UU\to\UU$ such that $F(\unit)=\Empty$, then excluded middle holds.
+\end{theorem}%\todo{reversed assumption because of Peter's generalization}
+% To prove Theorem~\ref{thm:automorphism}, we use the following lemma,
+% which is left as an exercise for the reader.
+
+\begin{lemma}
+\label{lem:lem-negation}
+  Excluded middle holds iff every proposition is logically equivalent
+  to the negation of some type.
+\end{lemma}
+\begin{proof}
+  Excluded middle is equivalent to $\neg \neg P \to P$ for all
+  propositions $P$, and we always have that
+  $\neg\neg\neg A \to \neg A$ for any type $A$.
+\end{proof}
+
+Not even an embedding of $\UU$ into itself that maps the unit type to
+the empty type is possible without classical axioms:
+\begin{lemma} \label{left:cancellable} Assuming propositional
+  extensionality, if there is a left-cancellable map $f: \UU \to \UU$
+  with $f(\unit)=\Empty$ then excluded middle holds.
+\end{lemma}
+\begin{proof}
+  For an arbitrary proposition $P$, we have:
+  \begin{align*}
+    P \,\!& \leftrightarrow  P = \unit \quad
+    && \mbox{(by propositional univalence)}
+    \\
+        &\leftrightarrow  f(P)=f(\unit)
+    && \mbox{(because $f$ is left-cancellable)}
+    \\
+        &\leftrightarrow f(P)=\Empty
+    && \mbox{(by the assumption that $f(\unit)=\Empty$)}
+    \\
+        &\leftrightarrow \neg f(P)
+          && \mbox{(by propositional extensionality).}
+    % P \,\!& \leftrightarrow  P = \unit \quad
+    % && \mbox{(by propositional univalence)}
+    % \\
+    %     &\leftrightarrow  P=F^{-1}(\Empty)
+    % && \mbox{(by the assumption that $F(\Empty)=\unit$)}
+    % \\
+    %     &\leftrightarrow  F(P)=\Empty
+    % && \mbox{(because $F$ is left-cancellable)}
+    % \\
+    %     &\leftrightarrow \neg F(P)
+    %       && \mbox{(by propositional univalence)}
+  \end{align*}
+  Hence $P$ is logically equivalent to the negation of the type
+  $f(P)$, and therefore, by Lemma~\ref{lem:lem-negation}, excluded
+  middle holds.
+\end{proof}
+This concludes the proof of Theorem~\ref{thm:automorphism}. Further
+assuming univalence, Peter Lumsdaine generalized this as follows.  Say
+that a type $A$ is \emph{inhabited} if the unique map $A\to\unit$ is
+surjective. This is equivalent to saying that its propositional
+truncation $\left\| X \right\|$ is
+pointed.  % \item For the isomorphism $F$, we can equivalently require
+  %   $F(\Empty)=\unit$ instead of $F(\unit)=\Empty$.  Then we use the
+  %   following lemma, where a type $A$ is said to be inhabited if the
+  %   unique map $A\to\unit$ is surjective.
+\begin{lemma}\label{lem:prop-equivalent}
+  If univalence holds and $A$ is an inhabited type, then any
+  proposition $P$ is logically equivalent to the identity type
+  $P \times A = A$.
+\end{lemma}
+\begin{proof}
+  If $P$ then $P=\unit$ by propositional extensionality, and so
+  $P\times A=A$ by univalence.  Conversely, assume $P \times A = A$.
+  Then $\|P \times A\| = \unit$ as $A$ is inhabited.  So
+  $\|P\|\times\|A\|=\unit$, and hence $P=\unit$.
+\end{proof}
+Using this, we can weaken the hypothesis to the requirement that $f$
+maps some inhabited type to the empty type, and get the same
+conclusion as in Lemma~\ref{left:cancellable}, at the expense of
+requiring univalence rather than just propositional extensionality:
+\begin{lemma} \label{left:cancellable:bis} Assuming univalence, if
+  there is a left-cancellable map $f: \UU \to \UU$ with
+  $f(A)=\Empty$ for some inhabited type $A$, then excluded middle holds.
+\end{lemma}
+\begin{proof}
+  For an arbitrary proposition $P$, we have:
+  \begin{align*}
+    P \,\!& \leftrightarrow  P \times A = A \quad
+    && \mbox{(by propositional univalence)}
+    \\
+        &\leftrightarrow  f(P \times A)=f(A)
+    && \mbox{(because $f$ is left-cancellable)}
+    \\
+        &\leftrightarrow f(P \times A)=\Empty
+    && \mbox{(by the assumption that $f(A)=\Empty$)}
+    \\
+        &\leftrightarrow \neg f(P \times A)
+          && \mbox{(by propositional univalence).}
+    % P \,\!& \leftrightarrow  P = \unit \quad
+    % && \mbox{(by propositional univalence)}
+    % \\
+    %     &\leftrightarrow  P=F^{-1}(\Empty)
+    % && \mbox{(by the assumption that $F(\Empty)=\unit$)}
+    % \\
+    %     &\leftrightarrow  F(P)=\Empty
+    % && \mbox{(because $F$ is left-cancellable)}
+    % \\
+    %     &\leftrightarrow \neg F(P)
+    %       && \mbox{(by propositional univalence)}
+  \end{align*}
+  Hence $P$ is logically equivalent to the negation of the type
+  $f(P)$, and therefore, by Lemma~\ref{lem:lem-negation}, excluded
+  middle holds.
+\end{proof}
+\begin{theorem}[Lumsdaine~\cite{automorphisms:lumsdaine:proposition}]
+\label{thm:automorphism:bis}
+Assuming univalence, if there is an automorphism of the universe that
+maps some inhabited type to the empty type, then excluded middle
+holds.
+%$F:\UU\to\UU$ such that $F(\unit)=\Empty$, then excluded middle holds.
+\end{theorem}
+
+\begin{corollary}
+  Assuming univalence, if there is an automorphism $g : \UU \to \UU$ of the universe
+  with $g(\Empty) \ne \Empty$, then the double
+  negation \[ \neg \neg \prod_{P:\UU} \isProp(P) \to P + \neg P \] of
+  the principle of excluded middle holds.
+\end{corollary}
+\begin{proof}
+  Let $f$ be the inverse of $g$. If $g(\Empty)$ then
+  $\left\| g(\Empty) \right\|$, and because $f$ maps $g(\Empty)$ to
+  $\Empty$, we conclude that excluded middle holds by
+  Theorem~\ref{thm:automorphism:bis}.  But the assumption
+  $g(\Empty) \ne \Empty$ is equivalent to $\neg \neg g(\Empty)$ by
+  propositional univalence, and so it implies the double negation of
+  excluded middle.
+\end{proof}
+% In particular, because continuity axioms negate the principle of
+% excluded middle, they are inconsistent with the double negation of
+% excluded middle. But they are consistent with
+% Instead of
+% requiring that $F(\Empty)$ is inhabited, we require that
+% $F(\Empty)\neq\Empty$.  By propositional univalence, this means
+% $\neg\neg F(\Empty)$, which says that $F(\Empty)$ is non-empty.
+% Hence, using the previous generalization, we get the weaker conclusion
+% of the double negation of excluded middle.
+
+% The double negation of excluded middle is expected\todo{right?}~to be
+% unprovable in a univalent type theory without classical axioms.
+
+
+
+
+
+
+\subparagraph*{Acknowledgements.}
+
+% The first named author would like to thank Uday Reddy for giving a
+% talk on parametricity that inspired this research.  We would like to
+% thank Andrej Bauer, Peter Lumsdaine and Mike Shulman for useful
+% discussions.
+
+
+% \abb{Does the first page footer need to be adjusted by us?} No.
+
+\appendix
+
+
+%%
+%% Bibliography
+%%
+
+%% Either use bibtex (recommended),
+
+\bibliography{parametricity-lem}
+
+%% .. or use the thebibliography environment explicitely
+
+
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
