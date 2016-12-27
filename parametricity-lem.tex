@@ -15,6 +15,7 @@
 \newcommand{\inr}{{\operatorname{inr}}}
 \newcommand{\idfunc}[1][]{\operatorname{id}_{#1}}
 \newcommand{\flip}{\operatorname{flip}}
+\newcommand{\N}{\mathbb{N}}
 
 % for section-numbered lemmas etc., use "numberwithinsect"
 
@@ -75,50 +76,55 @@
 \begin{abstract}
 
 
-  It is known that one can prove the existence of non-parametric
-  functions by assuming classical axioms, and our work is a converse
-  to that.  We prove classical axioms in Martin-Löf Type Theory by
+  It is known that one can construct non-parametric
+  functions by assuming classical axioms.  Our work is a converse
+  to that: we prove classical axioms in Martin-Löf Type Theory,
   assuming specific instances of non-parametricity.
 
 \end{abstract}
 
 \section{Parametricity in dependent type theory}
 
-Reynolds' theory of relational
-parametricity~\cite{DBLP:conf/ifip/Reynolds83}~characterizes the terms
-of the polymorphically typed $\lambda$-calculus System~F.  This theory
-of parametricity has since been extended to richer and more expressive
-type theories. Bernardy and
-Jansson~\cite{DBLP:journals/jfp/BernardyJP12} develop parametricity
-for pure type systems, and Atkey et
-al.~\cite{DBLP:conf/popl/AtkeyGJ14} develop parametricity for
-Martin-L\"of Type Theory (MLTT).  MLTT admits the definition of
-polymorphic functions using dependent function types and a
-universe~$\UU$.  For example, the polymorphic identity function has
-type $\forall \alpha . \alpha \to \alpha$ in System~F, and the type
-$\prod_{X : \UU} X \to X$ in MLTT.\@
+Broadly speaking, \emph{parametricity} statements assert that type-polymorphic 
+functions definable in some system must be natural in their type arguments,
+in some suitable sense.
 
-Reynolds' parametricity results show that the only term of System~F
+Reynolds' original theory of relational
+parametricity~\cite{DBLP:conf/ifip/Reynolds83}~characterizes terms
+of the polymorphically typed $\lambda$-calculus System~F.  This theory
+has since been extended to richer and more expressive
+type theories: to pure type systems by Bernardy and
+Jansson~\cite{DBLP:journals/jfp/BernardyJP12}, and to 
+Martin-L\"of Type Theory (MLTT) by Atkey et
+al.~\cite{DBLP:conf/popl/AtkeyGJ14}.
+
+Reynolds' results show that the only term of System~F
 with type $\forall \alpha . \alpha \to \alpha$ is
-$\Lambda \alpha. \lambda (x:\alpha).x$, the identity function at every
-type.  Atkey et al.\ prove that any term $f:\prod_{X : \UU} X \to X$
-of MLTT satisfies $e \comp f_X =f_Y \comp e$ for arbitrary
-$e : X \to Y$, where the equality sign denotes the identity type.
+$\Lambda \alpha. \lambda (x:\alpha).x$, the polymorphic identity function.
+%
+Similarly, Atkey et al.\ prove that any term $f:\prod_{X : \UU} X \to X$
+of MLTT\footnote{Precisely: MLTT with dependent products, $\N$, and a Tarski-style universe closed under these.} must satisfy $e \comp f_X =f_Y \comp e$ for arbitrary
+$e : X \to Y$ (where $=$ denotes the identity type); it follows that
+$f$ is the identity function at every type.
 % This is in the style of Wadler~\cite{DBLP:conf/fpca/Wadler89}, who
 % calls such conclusions \emph{free theorems}.
-From this we can then deduce that
-$M$ has to be the identity function at every type in MLTT.
 
 Keller and Lasson~\cite{DBLP:conf/csl/KellerL12} describe a type
-theory where parametricity is part of the language, and show the
-negation of excluded middle in the type theory.  Also it is easy to
-see that if excluded middle is part of the language, then there is a
-function $f : \prod_{X : \UU} X \to X$ which is the negation function
-$\flip:\bool\to\bool$ at the type $\bool$ of
-booleans~\cite[Exercise~6.9]{hottbook}, and so parametricity is
-violated.  In this note we show that, conversely, if $f$ is invariant
-under isomorphism, as is the case in univalent extensions of MLTT,
-this specific violation of parametricity gives excluded middle.
+theory where parametricity is part of the language (“internal parametricity”),
+and show that this implies the negation of excluded middle.
+%
+Indeed, given excluded middle, it is easy to construct a
+function $f : \prod_{X : \UU} X \to X$ whose value at the type $\bool$ of
+booleans is the negation function
+$\flip:\bool\to\bool$~\cite[Exercise~6.9]{hottbook}, violating parametricity.
+
+In this note we show various converse results: that failures of parametricity and related principles can imply excluded middle.
+%
+Most succinctly, in univalent settings, a non-parametric function as above (i.e.\ $f : \prod_{X : \UU} X \to X$ with
+$f_\bool = \flip$) implies excluded middle.
+%
+Relatedly, excluded middle also follows from suitably non-trivial automorphisms of the universe.
+
 
 % For arbitrary extensions\todo{models?}~of MLTT it may not be clear
 % whether they are parametric.  As an example, in the model of cubical
@@ -134,7 +140,7 @@ this specific violation of parametricity gives excluded middle.
 % results that parametricity negates excluded middle.  Here instead we
 % get excluded middle by a specific violation of parametricity.
 
-\section{Classical axioms from non-parametricity}
+\section{Classical axoims from non-parametricity}
 
 We now list a number of ways in which classical axioms can be derived
 from specific violations of parametricity. We work with the version of
@@ -330,7 +336,7 @@ The results discussed so far suggest that different violations of
 parametricity have different proof-theoretic strength: some violations
 are impossible, while others imply varying amounts of excluded middle.
 
-\section{Automorphisms of the universe}
+\section{Classical axioms from automorphisms of the universe}
 
 There have been attempts to use parametricity to show that the only
 automorphism of a universe of types is the identity.  Nicolai Kraus
