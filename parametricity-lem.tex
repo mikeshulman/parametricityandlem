@@ -428,9 +428,9 @@ the empty type is possible without classical axioms:
 This concludes the proof of Theorem~\ref{thm:automorphism}. Further
 assuming univalence, Peter Lumsdaine generalized this as follows.  Say
 that a type $A$ is \emph{inhabited} if the unique map $A\to\unit$ is
-surjective. This is equivalent to saying that its propositional
-truncation $\left\| X \right\|$ is
-pointed.  % \item For the isomorphism $F$, we can equivalently require
+surjective. This is equivalent to giving an element of the propositional
+truncation $\left\| A \right\|$.
+  % \item For the isomorphism $F$, we can equivalently require
   %   $F(\Empty)=\unit$ instead of $F(\unit)=\Empty$.  Then we use the
   %   following lemma, where a type $A$ is said to be inhabited if the
   %   unique map $A\to\unit$ is surjective.
@@ -440,14 +440,14 @@ pointed.  % \item For the isomorphism $F$, we can equivalently require
   $P \times A = A$.
 \end{lemma}
 \begin{proof}
-  If $P$ then $P=\unit$ by propositional extensionality, and so
-  $P\times A=A$ by univalence.  Conversely, assume $P \times A = A$.
-  Then $\|P \times A\| = \unit$ as $A$ is inhabited.  So
+  If $P$ then $P \equiv \unit$, so $P \times A \equiv A$,
+  and hence by univalence $P \times A = A$.  Conversely, assume $P \times A = A$.
+  Then $\|P \times A\| = \|A\| = \unit$, as $A$ is inhabited.  So
   $\|P\|\times\|A\|=\unit$, and hence $P=\unit$.
 \end{proof}
-Using this, we can weaken the hypothesis to the requirement that $f$
+Using this, we can weaken the hypothesis of Lemma~\ref{left:cancellable} to the requirement that $f$
 maps some inhabited type to the empty type, and get the same
-conclusion as in Lemma~\ref{left:cancellable}, at the expense of
+conclusion, at the expense of
 requiring univalence rather than just propositional extensionality:
 \begin{lemma} \label{left:cancellable:bis} Assuming univalence, if
   there is a left-cancellable map $f: \UU \to \UU$ with
@@ -488,7 +488,6 @@ requiring univalence rather than just propositional extensionality:
 Assuming univalence, if there is an automorphism of the universe that
 maps some inhabited type to the empty type, then excluded middle
 holds.
-%$F:\UU\to\UU$ such that $F(\unit)=\Empty$, then excluded middle holds.
 \end{theorem}
 
 \begin{corollary}
