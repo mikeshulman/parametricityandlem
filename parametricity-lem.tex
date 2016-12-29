@@ -15,6 +15,7 @@
 \newcommand{\inr}{{\operatorname{inr}}}
 \newcommand{\idfunc}[1][]{\operatorname{id}_{#1}}
 \newcommand{\flip}{\operatorname{flip}}
+\newcommand{\N}{\mathbb{N}}
 
 % for section-numbered lemmas etc., use "numberwithinsect"
 
@@ -28,21 +29,25 @@
 \title{Parametricity and excluded middle}
 
 %% Please provide for each author the \author and \affil macro, even when authors have the same affiliation, i.e. for each author there needs to be the  \author and \affil macros
-% \author[1]{Auke B. Booij}
-% \author[2]{Mart{\'\i}n H. Escard{\'o}}
-% \affil[1]{School of Computer Science, University of Birmingham,
-%   Birmingham B15 2TT, UK\\
-%   \texttt{abb538@cs.bham.ac.uk}}
-% \affil[2]{School of Computer Science, University of Birmingham,
-%   Birmingham B15 2TT, UK\\
-%   \texttt{m.escardo@cs.bham.ac.uk}}
-% \authorrunning{A.\,B. Booij and M.\,H. Escard{\'o}}
+\author[1]{Auke B. Booij}
+\author[2]{Mart{\'\i}n H. Escard{\'o}}
+\author[3]{Peter LeFanu Lumsdaine}
+\author[4]{Michael Shulman}
+\affil[1]{School of Computer Science, University of Birmingham,
+  Birmingham, UK\\
+  \texttt{abb538@cs.bham.ac.uk}}
+\affil[2]{School of Computer Science, University of Birmingham,
+  Birmingham, UK\\
+  \texttt{m.escardo@cs.bham.ac.uk}}
+\affil[3]{Mathematics Department, Stockholm University,
+  Stockholm, Sweden\\
+  \texttt{p.l.lumsdaine@math.su.se}}
+\affil[4]{Department of Mathematics and Computer Science, University of San Diego,
+  San Diego, USA\\
+  \texttt{shulman@sandiego.edu}}
+\authorrunning{A.\,B.~Booij, M.\,H.~Escard{\'o}, P.\,LeF.~Lumsdaine, and M.~Shulman}
 
-% \Copyright{Auke B. Booij and Mart{\'\i}n H. Escard{\'o}}
-
-\author{~}
-\authorrunning{~}
-\Copyright{~}
+\Copyright{Auke B. Booij, Mart{\'\i}n H. Escard{\'o}, Peter LeFanu Lumsdaine, and Michael Shulman}
 
 
 \subjclass{F.4.1 Mathematical Logic}% mandatory: Please choose ACM 1998 classifications from http://www.acm.org/about/class/ccs98-html . E.g., cite as "F.1.1 Models of Computation".
@@ -71,50 +76,55 @@
 \begin{abstract}
 
 
-  It is known that one can prove the existence of non-parametric
-  functions by assuming classical axioms, and our work is a converse
-  to that.  We prove classical axioms in Martin-Löf Type Theory by
+  It is known that one can construct non-parametric
+  functions by assuming classical axioms.  Our work is a converse
+  to that: we prove classical axioms in Martin-Löf Type Theory,
   assuming specific instances of non-parametricity.
 
 \end{abstract}
 
 \section{Parametricity in dependent type theory}
 
-Reynolds' theory of relational
-parametricity~\cite{DBLP:conf/ifip/Reynolds83}~characterizes the terms
-of the polymorphically typed $\lambda$-calculus System~F.  This theory
-of parametricity has since been extended to richer and more expressive
-type theories. Bernardy and
-Jansson~\cite{DBLP:journals/jfp/BernardyJP12} develop parametricity
-for pure type systems, and Atkey et
-al.~\cite{DBLP:conf/popl/AtkeyGJ14} develop parametricity for
-Martin-L\"of Type Theory (MLTT).  MLTT admits the definition of
-polymorphic functions using dependent function types and a
-universe~$\UU$.  For example, the polymorphic identity function has
-type $\forall \alpha . \alpha \to \alpha$ in System~F, and the type
-$\prod_{X : \UU} X \to X$ in MLTT.\@
+Broadly speaking, \emph{parametricity} statements assert that type-polymorphic 
+functions definable in some system must be natural in their type arguments,
+in some suitable sense.
 
-Reynolds' parametricity results show that the only term of System~F
+Reynolds' original theory of relational
+parametricity~\cite{DBLP:conf/ifip/Reynolds83}~characterizes terms
+of the polymorphically typed $\lambda$-calculus System~F.  This theory
+has since been extended to richer and more expressive
+type theories: to pure type systems by Bernardy and
+Jansson~\cite{DBLP:journals/jfp/BernardyJP12}, and to 
+Martin-L\"of Type Theory (MLTT) by Atkey et
+al.~\cite{DBLP:conf/popl/AtkeyGJ14}.
+
+Reynolds' results show that the only term of System~F
 with type $\forall \alpha . \alpha \to \alpha$ is
-$\Lambda \alpha. \lambda (x:\alpha).x$, the identity function at every
-type.  Atkey et al.\ prove that any term $f:\prod_{X : \UU} X \to X$
-of MLTT satisfies $e \comp f_X =f_Y \comp e$ for arbitrary
-$e : X \to Y$, where the equality sign denotes the identity type.
+$\Lambda \alpha. \lambda (x:\alpha).x$, the polymorphic identity function.
+%
+Similarly, Atkey et al.\ prove that any term $f:\prod_{X : \UU} X \to X$
+of MLTT\footnote{Precisely: MLTT with dependent products, $\N$, and a Tarski-style universe closed under these.} must satisfy $e \comp f_X =f_Y \comp e$ for arbitrary
+$e : X \to Y$ (where $=$ denotes the identity type); it follows that
+$f$ is the identity function at every type.
 % This is in the style of Wadler~\cite{DBLP:conf/fpca/Wadler89}, who
 % calls such conclusions \emph{free theorems}.
-From this we can then deduce that
-$M$ has to be the identity function at every type in MLTT.
 
 Keller and Lasson~\cite{DBLP:conf/csl/KellerL12} describe a type
-theory where parametricity is part of the language, and show the
-negation of excluded middle in the type theory.  Also it is easy to
-see that if excluded middle is part of the language, then there is a
-function $f : \prod_{X : \UU} X \to X$ which is the negation function
-$\flip:\bool\to\bool$ at the type $\bool$ of
-booleans~\cite[Exercise~6.9]{hottbook}, and so parametricity is
-violated.  In this note we show that, conversely, if $f$ is invariant
-under isomorphism, as is the case in univalent extensions of MLTT,
-this specific violation of parametricity gives excluded middle.
+theory where parametricity is part of the language (“internal parametricity”),
+and show that this implies the negation of excluded middle.
+%
+Indeed, given excluded middle, it is easy to construct a
+function $f : \prod_{X : \UU} X \to X$ whose value at the type $\bool$ of
+booleans is the negation function
+$\flip:\bool\to\bool$~\cite[Exercise~6.9]{hottbook}, violating parametricity.
+
+In this note we show various converse results: that failures of parametricity and related principles can imply excluded middle.
+%
+Most succinctly, in univalent settings, a non-parametric function as above (i.e.\ $f : \prod_{X : \UU} X \to X$ with
+$f_\bool = \flip$) implies excluded middle.
+%
+Relatedly, excluded middle also follows from suitably non-trivial automorphisms of the universe.
+
 
 % For arbitrary extensions\todo{models?}~of MLTT it may not be clear
 % whether they are parametric.  As an example, in the model of cubical
@@ -130,7 +140,7 @@ this specific violation of parametricity gives excluded middle.
 % results that parametricity negates excluded middle.  Here instead we
 % get excluded middle by a specific violation of parametricity.
 
-\section{Classical axioms from non-parametricity}
+\section{Classical axoims from non-parametricity}
 
 We now list a number of ways in which classical axioms can be derived
 from specific violations of parametricity. We work with the version of
@@ -326,7 +336,7 @@ The results discussed so far suggest that different violations of
 parametricity have different proof-theoretic strength: some violations
 are impossible, while others imply varying amounts of excluded middle.
 
-\section{Automorphisms of the universe}
+\section{Classical axioms from automorphisms of the universe}
 
 There have been attempts to use parametricity to show that the only
 automorphism of a universe of types is the identity.  Nicolai Kraus
@@ -418,9 +428,9 @@ the empty type is possible without classical axioms:
 This concludes the proof of Theorem~\ref{thm:automorphism}. Further
 assuming univalence, Peter Lumsdaine generalized this as follows.  Say
 that a type $A$ is \emph{inhabited} if the unique map $A\to\unit$ is
-surjective. This is equivalent to saying that its propositional
-truncation $\left\| X \right\|$ is
-pointed.  % \item For the isomorphism $F$, we can equivalently require
+surjective. This is equivalent to giving an element of the propositional
+truncation $\left\| A \right\|$.
+  % \item For the isomorphism $F$, we can equivalently require
   %   $F(\Empty)=\unit$ instead of $F(\unit)=\Empty$.  Then we use the
   %   following lemma, where a type $A$ is said to be inhabited if the
   %   unique map $A\to\unit$ is surjective.
@@ -430,14 +440,14 @@ pointed.  % \item For the isomorphism $F$, we can equivalently require
   $P \times A = A$.
 \end{lemma}
 \begin{proof}
-  If $P$ then $P=\unit$ by propositional extensionality, and so
-  $P\times A=A$ by univalence.  Conversely, assume $P \times A = A$.
-  Then $\|P \times A\| = \unit$ as $A$ is inhabited.  So
+  If $P$ then $P \equiv \unit$, so $P \times A \equiv A$,
+  and hence by univalence $P \times A = A$.  Conversely, assume $P \times A = A$.
+  Then $\|P \times A\| = \|A\| = \unit$, as $A$ is inhabited.  So
   $\|P\|\times\|A\|=\unit$, and hence $P=\unit$.
 \end{proof}
-Using this, we can weaken the hypothesis to the requirement that $f$
+Using this, we can weaken the hypothesis of Lemma~\ref{left:cancellable} to the requirement that $f$
 maps some inhabited type to the empty type, and get the same
-conclusion as in Lemma~\ref{left:cancellable}, at the expense of
+conclusion, at the expense of
 requiring univalence rather than just propositional extensionality:
 \begin{lemma} \label{left:cancellable:bis} Assuming univalence, if
   there is a left-cancellable map $f: \UU \to \UU$ with
@@ -478,7 +488,6 @@ requiring univalence rather than just propositional extensionality:
 Assuming univalence, if there is an automorphism of the universe that
 maps some inhabited type to the empty type, then excluded middle
 holds.
-%$F:\UU\to\UU$ such that $F(\unit)=\Empty$, then excluded middle holds.
 \end{theorem}
 
 \begin{corollary}
